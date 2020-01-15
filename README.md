@@ -1,5 +1,5 @@
 # DEMU D16i Arch
-Linux/Windows compatible D16i Arch emulator written on C++. Expandable and efficient.
+Linux/Windows compatible D16i Arch emulator written on C++. A personal Project.
 
-# Compile
-$make
+# Make for windows
+$make windows
