@@ -64,7 +64,7 @@
 #define INMI_ADDR_MODE_OP(ir) ((ir & 0xf8) >> 0x3)
 #define INMI_ADDR_MODE_GS(ir) ((ir & 0x100) >> 0x8)
 #define INMI_ADDR_MODE_HL(ir) ((ir & 0x200) >> 0x9)
-#define INMI_ADDR_MODE_S1(ir) ((ir & 0x1c00 >> 0xa))
+#define INMI_ADDR_MODE_S1(ir) ((ir & 0x1c00) >> 0xa)
 #define INMI_ADDR_MODE_T1(ir) ((ir & 0xe000) >> 0xd)
 #define INMI_ADDR_MODE_IM(ir) ((ir & 0xff00) >> 0x8)
 //
