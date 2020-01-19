@@ -47,7 +47,7 @@ void CORE::execute(struct MEMORY_ARRAY *mem_space, bool &HALT)
 	{
 		if(STMR.JMP == true) //Not increment, other wise it would execute the wrong data
 		{
-			//Because the PC is already set to the address of exeution
+			//Because the PC is already set to the address of execution
 			//Do nothing :(
 			STMR.JMP = false;
 		}
@@ -168,13 +168,25 @@ void CORE::execute(struct MEMORY_ARRAY *mem_space, bool &HALT)
 			if(LSINS_ADDR_MODE_GS(IR) == 0) //GPR
 			{
 				//Address = Register + Immediate
-				GPR_LO [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))) & 0xff);
-				GPR_HI [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, ((GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))) >> 0x8) & 0xff);
+				if(LSINS_ADDR_MODE_HL(IR) == 0)
+				{
+					GPR_LO [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))));
+				}
+				else if(LSINS_ADDR_MODE_HL(IR) == 1)
+				{
+					GPR_HI [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))));
+				}
 			}
 			else if(LSINS_ADDR_MODE_GS(IR) == 1) //SPR
 			{
-				SPR_LO [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))) & 0xff);
-				SPR_HI [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, ((GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))) >> 0x8) & 0xff);
+				if(LSINS_ADDR_MODE_HL(IR) == 0)
+				{
+					SPR_LO [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))));
+				}
+				else if(LSINS_ADDR_MODE_HL(IR) == 1)
+				{
+					SPR_HI [LSINS_ADDR_MODE_T1(IR)] = (unsigned char)(memory_access_read(mem_space, (GPR_LO [LSINS_ADDR_MODE_P1(IR)] | (GPR_HI [LSINS_ADDR_MODE_P1(IR)] << 8 ) + LSINS_ADDR_MODE_IM(IR))));
+				}
 			}
 		}
 		else if(LSINS_ADDR_MODE_LS(IR) == 1) //STORE
@@ -259,7 +271,7 @@ void CORE::execute(struct MEMORY_ARRAY *mem_space, bool &HALT)
 		}
 	break;
 	case iINMI:
-		if(debug)
+		if(false)
 		{
 			std::cout << "INMI Instruction:" << std::endl;
 			std::cout << "\tOP: " << std::bitset <5> (INMI_ADDR_MODE_OP(IR)) << std::endl;
@@ -305,7 +317,44 @@ void CORE::execute(struct MEMORY_ARRAY *mem_space, bool &HALT)
 			std::cout << "CORE: HALT" << std::endl;
 		break;
 		case iSPUSH:
-			memory_access_write(mem_space, (SPR_LO [iSP] | (SPR_HI [iSP] << 0x8)), GPR_LO [INMI_ADDR_MODE_S1(IR)]);
+			//std::cout << "iSPUSH\n";
+			if(INMI_ADDR_MODE_HL(IR) == 0x00)
+			{
+				if(INMI_ADDR_MODE_GS(IR) == iGPR)
+				{
+					memory_access_write(mem_space, (SPR_LO [iSP] | (SPR_HI [iSP] << 0x8)), GPR_LO [INMI_ADDR_MODE_S1(IR)]);
+				}
+				else if(INMI_ADDR_MODE_GS(IR) == iSPR)
+				{
+					memory_access_write(mem_space, (SPR_LO [iSP] | (SPR_HI [iSP] << 0x8)), SPR_LO [INMI_ADDR_MODE_S1(IR)]);
+				}
+			}
+			else if(INMI_ADDR_MODE_HL(IR) == 0x01)
+			{
+				if(INMI_ADDR_MODE_GS(IR) == iGPR)
+				{
+					memory_access_write(mem_space, (SPR_LO [iSP] | (SPR_HI [iSP] << 0x8)), GPR_HI [INMI_ADDR_MODE_S1(IR)]);
+				}
+				else if(INMI_ADDR_MODE_GS(IR) == iSPR)
+				{
+					memory_access_write(mem_space, (SPR_LO [iSP] | (SPR_HI [iSP] << 0x8)), SPR_HI [INMI_ADDR_MODE_S1(IR)]);
+				}
+			}
+			//memory_access_write(mem_space, address, data);
+		break;
+		case iRETURN:
+			//std::cout << "iRETURN\n";
+			PC = (SPR_LO [iLPR] | (SPR_HI [iLPR] << 0x8));
+			STMR.JMP = true;
+		break;
+		case iCALL:
+			temporal = PC + 2;
+			//std::cout << "iCALL Ins\n";
+			SPR_HI [iLPR] = ((temporal >> 0x8) & 0xff);
+			SPR_LO [iLPR] = (temporal & 0xff);
+			STMR.JMP = true;
+			PC = (GPR_LO [INMI_ADDR_MODE_S1(IR)] | (GPR_HI [INMI_ADDR_MODE_S1(IR)] << 0x8));
+			//std::cout << "Jumping to address: " << std::bitset <16> (PC) << std::endl;
 		break;
 		default:
 			break;
@@ -479,7 +528,7 @@ char CORE::memory_access_read(struct MEMORY_ARRAY * MAPPED_MEM, unsigned short i
 	{
 		return MAPPED_MEM->ROM_mem [address];
 	}
-	if((address >> 0x8) == 0xfe) //RAM mapped address
+	if((address >> 0x8) != 0x00) //RAM mapped address
 	{
 		return MAPPED_MEM->RAM_mem [address];
 	}
@@ -492,7 +541,7 @@ void CORE::memory_access_write(struct MEMORY_ARRAY * MAPPED_MEM, unsigned short 
 	{
 		MAPPED_MEM->ROM_mem [address] = data;
 	}
-	if((address >> 0x8) == 0xfe) //RAM mapped address
+	if((address >> 0x8) != 0x00) //RAM mapped address
 	{
 		MAPPED_MEM->RAM_mem [address] = data;
 	}
@@ -536,7 +585,21 @@ void CORE::run(struct MEMORY_ARRAY *MAPPED_MEM, bool &halt)
 		execute(MAPPED_MEM, halt);
 		//std::system("clear");
 	}
-	
+	//std::cout << std::endl;
+	std::cout << "Stack region: address 0xffff\n";
+	for(int addr = 0xffff; addr >= 0xfff0;)
+	{
+		std::cout << "address: 0x" << std::hex << addr << " data:";
+		for(size_t x = 0;x <= 4;x++)
+		{
+			//memory_access_write(MAPPED_MEM, 0xff, 0xff);
+
+			std::cout << " 0x" << std::bitset <8> (memory_access_read(MAPPED_MEM, addr));
+			std::cout.flush();
+			addr--;
+		}
+		std::cout << std::endl;
+	}
 	//core_mutex->lock();
 	core_mutex->unlock();
 	std::cout.flush();

@@ -7,7 +7,8 @@
 #define debug false
 
 #define ROM_SIZE 0xff
-#define RAM_SIZE 0xfe00
+#define RAM_SIZE 0xffff
+//0xfe00
 #define IO_BUFFERS_SPACE_SIZE 0xff
 //Memory Mapping
 
