@@ -19,5 +19,3 @@ main(0x0000):
 	store ax, lo, dx;
 	noop; //Will get overwritten
 	
-halt_save(0xaa):
-	halt; //Just for if the store halt, doesnt work
