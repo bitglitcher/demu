@@ -3,7 +3,7 @@
 #include <string.h>
 #include <vector>
 #include <thread>
-#include "CORE/core.h"
+#include "arch/D16i/core/core.h"
 #include "terminal.h"
 #include <queue>
 #include <bitset>

@@ -9,7 +9,7 @@
 #include <chrono>
 #include <cstdio>
 #include <future>
-#include "CORE/core.h"
+#include "arch/D16i/core/core.h"
 
 #define buffer_lenght 255
 

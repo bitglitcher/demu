@@ -4,9 +4,9 @@
 #include <thread>
 #include <fstream>
 #include <string.h>
-#include "../arch/D16i/OPCODES/inset.h"
-#include "../arch/D16i/OPCODES/alu_ops.h"
-#include "../arch/D16i/OPCODES/addressing_modes.h"
+#include "../OPCODES/inset.h"
+#include "../OPCODES/alu_ops.h"
+#include "../OPCODES/addressing_modes.h"
 #include <bitset>
 #include "core.h"
 #include <bitset>
