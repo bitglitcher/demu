@@ -1,5 +1,16 @@
 # DEMU D16i Arch
-Linux/Windows compatible D16i Arch emulator written on C++. A personal Project.
+Linux/Windows compatible architecture emulator.
 
-# Make for windows
-$make windows
+Currently Supported Architectures:
+	-D16i
+	-D32i (In Progress)
+
+# Build for Linux
+```
+make
+```
+
+# Build for windows
+```
+make windows
+```
