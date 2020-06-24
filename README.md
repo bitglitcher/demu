@@ -3,8 +3,8 @@ Linux/Windows compatible architecture emulator.
 
 Currently Supported Architectures:
 
-	*D16i
-	*D32i (In Progress)
+* D16i
+* D32i (In Progress)
 
 # Build for Linux
 ```
